@@ -5,31 +5,31 @@ int main()
 {
     int marks[3][4][2];
 
-    for(int p = 0; p < 3; p++)
+    for(int paper = 0; paper < 3; paper++)
     {
-        for(int s = 0; s < 4; s++)
+        for(int student = 0; student < 4; student++)
         {
-            for(int sub = 0; sub < 2; sub++)
+            for(int subject = 0; subject < 2; subject++)
             {
-                cout<<"Enter Paper "<<p+1<<" Student "<<s+1<<" Subject "<<sub+1<<" Marks---> ";
-                cin>>marks[p][s][sub];
+                cout<<"Enter Paper "<<paper+1<<" Student "<<student+1<<" Subject "<<subject+1<<" Marks---> ";
+                cin>>marks[paper][student][subject];
             }
         }
     }
 
-    for(int s = 0; s < 4; s++)
+    for(int student = 0; student < 4; student++)
     {
         int total = 0;
 
-        for(int p = 0; p < 3; p++)
+        for(int paper = 0; paper < 3; paper++)
         {
-            for(int sub = 0; sub < 2; sub++)
+            for(int subject = 0; subject < 2; subject++)
             {
-                total = total + marks[p][s][sub];
+                total = total + marks[paper][student][subject];
             }
         }
 
-        cout<<"Total marks of Student "<<s+1<<" is---> "<<total<<endl;
+        cout<<"Total marks of Student "<<student+1<<" is---> "<<total<<endl;
     }
 
     return 0;
