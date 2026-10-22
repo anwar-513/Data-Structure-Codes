@@ -1,91 +1,85 @@
 /*
 You receive an array of API response times (ms) from a
-delivery-tracking service for one hour:
+delivery-tracking service for one hour :
 
 times = [120, 85, 300, 85, 410, 95, 85, 230, 60, 410]
 
-Write functions to produce a report:
-
-Return the slowest and fastest response time, 
-and the index of the first occurrence of each.
-Compute the average response time as a double.
-Count how many requests were slower than the average.
-Count the frequency of a given value x (test with x = 85 and x = 500).
-Print the array in reverse order without modifying it and without a second array.
-
-Then test with an all-negative array [-5, -2, -9] to prove your min/max initialization is correct.
+Report the slowest and fastest response time and the index of the
+first occurrence of each. Compute the average, count requests slower
+than average, count a given value, and print the array in reverse.
+Then test with an all-negative array to verify min/max initialization.
 */
 
-#include<iostream>
+#include <iostream>
 
 using namespace std;
 
-void report(int array[], int size)
+struct Stats
 {
-    int min = array[0];
-    short minIndex = 0;
-    int max = array[0];
-    short maxIndex = 0;
+    int max;
+    int maxIndex;
+    int min;
+    int minIndex;
+    double average;
+};
 
-    double sum = 0;
-    double average = 0;
+Stats analyze(const int array[], int size)
+{
+    Stats stats = {array[0], 0, array[0], 0, 0.0};
+    double sum = 0.0;
 
-
-    for(int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
-        if(array[i] > max)
+        if (array[i] > stats.max)
         {
-            max = array[i];
-            maxIndex = i;
+            stats.max = array[i];
+            stats.maxIndex = i;
         }
-        if(array[i] < min)
+        if (array[i] < stats.min)
         {
-            min = array[i];
-            minIndex = i;
+            stats.min = array[i];
+            stats.minIndex = i;
         }
         sum += array[i];
     }
 
-    average = sum / size;
-
-    int countbelowAverage = 0;
-    int countFrequency = 0;
-    int i = 0;
-    int frequency;
-
-    cout<<"Enter the value for checking---> ";
-    cin>>frequency;
-    while(i < size)
-    {
-        if(array[i] > average)
-        {
-        countbelowAverage++;
-        }
-        if(array[i] == frequency)
-        {
-            countFrequency++;
-        }
-        i++;
-    }
-
-    cout<<"The Slowest response of Hour: "<<max<<endl;
-    cout<<"The Slowest response is on '"<<maxIndex<<"' index"<<endl;
-    
-    cout<<"The Fastest response of Hour: "<<min<<endl;
-    cout<<"The Fastest response is on '"<<minIndex<<"' index"<<endl;
-
-    cout<<"The Average of the service hour is : "<<average<<endl;
-    cout<<"The Request slower than Average is : "<<countbelowAverage<<endl;
-    cout<<"The Given elements are '"<<countFrequency<<"' times available."<<endl;
+    stats.average = sum / size;
+    return stats;
 }
 
-void printReverse(int array[], int size)
+int countAbove(const int array[], int size, double average)
+{
+    int count = 0;
+    for (int i = 0; i < size; i++)
+    {
+        if (array[i] > average)
+        {
+            count++;
+        }
+    }
+    return count;
+}
+
+int countFreq(const int array[], int size, int value)
+{
+    int count = 0;
+    for (int i = 0; i < size; i++)
+    {
+        if (array[i] == value)
+        {
+            count++;
+        }
+    }
+    return count;
+}
+
+void printReverse(const int array[], int size)
 {
     cout<<"[";
-    for(int i = size-1; i >= 0; i--)
+    for (int i = size - 1; i >= 0; i--)
     {
         cout<<array[i];
-        if(i > 0)
+        if (i > 0)
         {
             cout<<", ";
         }
@@ -93,14 +87,39 @@ void printReverse(int array[], int size)
     cout<<"]"<<endl;
 }
 
+void report(const int array[], int size)
+{
+    if (size <= 0)
+    {
+        cout<<"Cannot report on an empty array."<<endl;
+        return;
+    }
+
+    Stats stats = analyze(array, size);
+    cout<<"The slowest response time : "<<stats.max<<endl;
+    cout<<"First occurrence index : "<<stats.maxIndex<<endl;
+    cout<<"The fastest response time : "<<stats.min<<endl;
+    cout<<"First occurrence index : "<<stats.minIndex<<endl;
+    cout<<"Average response time : "<<stats.average<<endl;
+    cout<<"Requests slower than average : "
+        <<countAbove(array, size, stats.average)<<endl;
+}
 
 int main()
 {
-    int SIZE = 10;
+    const int SIZE = 10;
     int times[SIZE] = {120, 85, 300, 85, 410, 95, 85, 230, 60, 410};
+    int negativeTimes[] = {-5, -2, -9};
 
+    cout<<"____________Response-time report____________"<<endl;
     report(times, SIZE);
+    cout<<"Frequency of 85 : "<<countFreq(times, SIZE, 85)<<endl;
+    cout<<"Frequency of 500 : "<<countFreq(times, SIZE, 500)<<endl;
+    cout<<"Array in reverse : ";
     printReverse(times, SIZE);
 
-    return 0; 
+    cout<<endl<<"__________All-negative array report________"<<endl;
+    report(negativeTimes, 3);
+
+    return 0;
 }
